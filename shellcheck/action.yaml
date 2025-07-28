@@ -118,7 +118,13 @@ runs:
         # find the directory containing the checkout of this action
         shellscripts=$(find ~/work/_actions -name shell-scripts) ||
             { echo "FATAL: Did not find 'shell-scripts'"; exit 1; }
+        if [ -z "$shellscripts" ]; then
+            shellscripts=$(find . -name "shell-scripts" -type f) &&
+               [ -n "$shellscripts" ] ||
+                 { echo "FATAL: could not find shell-scripts"; exit 1; }
+        fi
 
+        echo "shellscripts=$shellscripts"
         chmod u+x "$shellscripts"
 
         "$shellscripts" ${INCLUDE_PATHS}
