@@ -210,6 +210,7 @@ def cmd_find(args: argparse.Namespace) -> None:
 
     # Execute command if provided, otherwise print results
     if hasattr(args, 'command') and args.command:
+        print(f"found {len(results)} shell scripts. executing {args.command}")
         command_passed = execute_command(args.command, results)
         if not command_passed:
             sys.exit(1)

@@ -48,3 +48,5 @@ jobs:
           EOF
 
       - uses: "./shellcheck"
+        with:
+          subcommand: "find"

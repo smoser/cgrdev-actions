@@ -16,6 +16,10 @@ inputs:
     type: boolean
     required: false
     default: false
+  subcommand:
+    description: 'the shell-scripts subcommand'
+    required: false
+    default: "shellcheck"
   paths:
     description: |
       Paths to run on. space separated.
@@ -105,6 +109,7 @@ runs:
       env:
         CONFIG_JSON: ${{ inputs.config_json }}
         INCLUDE_PATHS: ${{ inputs.paths }}
+        subcommand: ${{ inputs.subcommand }}
       run: |
         if [ "${CONFIG_JSON}" != "" ] && [ "$INCLUDE_PATHS" != "." ]; then
             echo "FATAL: Cannot provide 'paths' and 'config_json' together" 1>&2
@@ -127,4 +132,4 @@ runs:
         echo "shellscripts=$shellscripts"
         chmod u+x "$shellscripts"
 
-        "$shellscripts" ${INCLUDE_PATHS}
+        "$shellscripts" "$subcommand" ${INCLUDE_PATHS}
