@@ -60,7 +60,10 @@ jobs:
               "paths": ["."],
               "match_filename": true,
               "match_shbang": true,
-              "command": ["sh", "-c", "for x in \"$@\"; do echo $x; done | tee /tmp/found"]
+              "call_combined": true,
+              "command": [
+                "sh", "-c",
+                "for x in \"$@\"; do echo $x; done | tee /tmp/found"]
             }
 
       - name: "check output"

@@ -142,6 +142,8 @@ def cmd_find(args: argparse.Namespace) -> None:
             args.exclude = config["excludes"]
         if "paths" in config:
             args.paths = config["paths"]
+        if "call_combined" in config:
+            args.call_combined = config["call_combined"]
         if "command" in config:
             args.command = config["command"]
 
@@ -208,12 +210,22 @@ def cmd_find(args: argparse.Namespace) -> None:
     if had_errors:
         sys.exit(1)
 
+    results = sorted(results)
+
     # Execute command if provided, otherwise print results
     if hasattr(args, 'command') and args.command:
         print(f"found {len(results)} shell scripts. executing {args.command}")
-        command_passed = execute_command(args.command, results)
-        if not command_passed:
-            sys.exit(1)
+        if args.call_combined:
+            command_passed = execute_command(args.command, results)
+            if not command_passed:
+                sys.exit(1)
+        else:
+            fails: int = 0
+            for r in results:
+                if not execute_command(args.command, [r]):
+                    fails += 1
+            if fails != 0:
+                sys.exit(1)
     else:
         # Output results
         if hasattr(args, 'print0') and args.print0:
@@ -268,6 +280,18 @@ def add_common_arguments(parser: argparse.ArgumentParser) -> None:
         action="append",
         default=[],
         help="Exclude paths matching regex (can be used multiple times)",
+    )
+    parser.add_argument(
+        "--call-combined",
+        action="store_true",
+        default=False,
+        help="Call command with multiple paths, like xargs (default: false)",
+    )
+    parser.add_argument(
+        "--no-call-combined",
+        dest="call_combined",
+        action="store_false",
+        help="Call command once for each found script",
     )
     parser.add_argument(
         "--no-default-excludes",
