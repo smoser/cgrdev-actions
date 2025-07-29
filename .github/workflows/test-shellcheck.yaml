@@ -47,4 +47,34 @@ jobs:
           echo "hello env world"
           EOF
 
+          cat > non-script <<"EOF"
+          go cubs go
+          EOF
+
+          cat > expected <<"EOF"
+          bad-script.sh
+          good-script
+          good-script.sh
+          EOF
+
       - uses: "./shellcheck"
+        with:
+          subcommand: "find"
+          config_json: |
+            {
+              "excludes": ["[.]git/.*"],
+              "paths": ["."],
+              "match_filename": true,
+              "match_shbang": true,
+              "call_combined": true,
+              "command": [
+                "sh", "-c",
+                "for x in \"$@\"; do echo $x; done | tee /tmp/found.out",
+                "arg0"]
+            }
+
+      - name: "check output"
+        shell: bash
+        run: |
+          sort /tmp/found.out > /tmp/found
+          diff -u expected /tmp/found

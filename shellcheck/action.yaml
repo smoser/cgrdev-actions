@@ -16,6 +16,10 @@ inputs:
     type: boolean
     required: false
     default: false
+  subcommand:
+    description: 'the shell-scripts subcommand'
+    required: false
+    default: "shellcheck"
   paths:
     description: |
       Paths to run on. space separated.
@@ -91,20 +95,13 @@ runs:
       run: |
         /usr/local/bin/shellcheck --version
 
-    - name: "Debug some"
-      shell: bash
-      run: |
-        echo "you are in $PWD"
-        ( set -x  ; ls -l ~/work/_actions )
-        echo ===
-        env
-
     - name: "Execute shellcheck"
       if: ${{ inputs.install_only != 'false' }}
       shell: bash
       env:
         CONFIG_JSON: ${{ inputs.config_json }}
         INCLUDE_PATHS: ${{ inputs.paths }}
+        subcommand: ${{ inputs.subcommand }}
       run: |
         if [ "${CONFIG_JSON}" != "" ] && [ "$INCLUDE_PATHS" != "." ]; then
             echo "FATAL: Cannot provide 'paths' and 'config_json' together" 1>&2
@@ -118,7 +115,16 @@ runs:
         # find the directory containing the checkout of this action
         shellscripts=$(find ~/work/_actions -name shell-scripts) ||
             { echo "FATAL: Did not find 'shell-scripts'"; exit 1; }
+        if [ -z "$shellscripts" ]; then
+            # when running as ./actions
+            if [ ! -f "shellcheck/shell-scripts" ]; then
+               echo "FATAL: could not find shell-scripts"
+               exit 1
+            fi
+            shellscripts="./shellcheck/shell-scripts"
+        fi
 
+        echo "shellscripts=$shellscripts"
         chmod u+x "$shellscripts"
 
-        "$shellscripts" ${INCLUDE_PATHS}
+        "$shellscripts" "$subcommand" ${INCLUDE_PATHS}
