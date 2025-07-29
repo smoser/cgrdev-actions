@@ -62,8 +62,9 @@ jobs:
               "match_shbang": true,
               "call_combined": true,
               "command": [
-                "sh", "-c", "arg0",
-                "for x in \"$@\"; do echo $x; done | tee /tmp/found.out"]
+                "sh", "-c",
+                "for x in \"$@\"; do echo $x; done | tee /tmp/found.out",
+                "arg0"]
             }
 
       - name: "check output"
