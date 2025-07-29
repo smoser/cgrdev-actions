@@ -116,9 +116,12 @@ runs:
         shellscripts=$(find ~/work/_actions -name shell-scripts) ||
             { echo "FATAL: Did not find 'shell-scripts'"; exit 1; }
         if [ -z "$shellscripts" ]; then
-            shellscripts=$(find . -name "shell-scripts" -type f) &&
-               [ -n "$shellscripts" ] ||
-                 { echo "FATAL: could not find shell-scripts"; exit 1; }
+            # when running as ./actions
+            if [ ! -f "shellcheck/shell-scripts" ]; then
+               echo "FATAL: could not find shell-scripts"
+               exit 1
+            fi
+            shellscripts="./shellcheck/shell-scripts"
         fi
 
         echo "shellscripts=$shellscripts"
