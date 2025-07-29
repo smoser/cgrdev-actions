@@ -70,7 +70,6 @@ jobs:
           bad-script.sh
           good-script
           good-script.sh
-          non-script
           EOF
           sort /tmp/found > /tmp/scripts
-          diff -u /tmp/expected /tmp/found
+          diff -u /tmp/expected /tmp/scripts
