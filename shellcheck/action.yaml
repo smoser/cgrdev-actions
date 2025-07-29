@@ -103,6 +103,11 @@ runs:
         echo ===
         env
 
+    - name: "Debug more"
+      shell: bash
+      run: |
+        find ~/work/_actions -type f | sort
+
     - name: "Execute shellcheck"
       if: ${{ inputs.install_only != 'false' }}
       shell: bash
