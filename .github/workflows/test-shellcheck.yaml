@@ -51,6 +51,12 @@ jobs:
           go cubs go
           EOF
 
+          cat > expected <<"EOF"
+          bad-script.sh
+          good-script
+          good-script.sh
+          EOF
+
       - uses: "./shellcheck"
         with:
           subcommand: "find"
@@ -70,10 +76,5 @@ jobs:
       - name: "check output"
         shell: bash
         run: |
-          cat > /tmp/expected <<"EOF"
-          bad-script.sh
-          good-script
-          good-script.sh
-          EOF
           sort /tmp/found.out > /tmp/found
-          diff -u /tmp/expected /tmp/found
+          diff -u expected /tmp/found
