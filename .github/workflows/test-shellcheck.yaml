@@ -55,13 +55,13 @@ jobs:
         with:
           subcommand: "find"
           config_json: |
-          {
-            "excludes": ["[.]git/.*"],
-            "paths": ["."],
-            "match_filename": true,
-            "match_shbang": true,
-            "command": ["sh", "-c", "for x in \"$@\"; do echo $x; done | tee /tmp/found"]
-          }
+            {
+              "excludes": ["[.]git/.*"],
+              "paths": ["."],
+              "match_filename": true,
+              "match_shbang": true,
+              "command": ["sh", "-c", "for x in \"$@\"; do echo $x; done | tee /tmp/found"]
+            }
 
       - name: "check output"
         shell: bash
