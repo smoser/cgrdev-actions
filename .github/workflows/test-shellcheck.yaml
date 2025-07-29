@@ -62,8 +62,8 @@ jobs:
               "match_shbang": true,
               "call_combined": true,
               "command": [
-                "sh", "-c",
-                "for x in \"$@\"; do echo $x; done | tee /tmp/found"]
+                "sh", "-c", "arg0",
+                "for x in \"$@\"; do echo $x; done | tee /tmp/found.out"]
             }
 
       - name: "check output"
@@ -74,5 +74,5 @@ jobs:
           good-script
           good-script.sh
           EOF
-          sort /tmp/found > /tmp/scripts
-          diff -u /tmp/expected /tmp/scripts
+          sort /tmp/found.out > /tmp/found
+          diff -u /tmp/expected /tmp/found
