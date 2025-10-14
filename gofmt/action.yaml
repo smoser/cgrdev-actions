@@ -57,6 +57,6 @@ runs:
       done
 
   - name: Verify gofmt
-    uses: chainguard-dev/actions/nodiff@1df2b5598adffbfe72a3abe9243d73e338bbb006 # v1.4.10
+    uses: chainguard-dev/actions/nodiff@94249a4828defae94ef3eaeaafaff2f95f1b446f # v1.5.6
     with:
       fixup-command: "gofmt ${{ inputs.args }}"
